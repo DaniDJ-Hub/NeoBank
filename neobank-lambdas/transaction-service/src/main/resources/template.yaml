@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Transaction Service Lambda
+
+# NOTE: this template is used for `sam local start-api` / `sam local invoke`
+# during development. The real deployment is Terraform-managed
+# (neobank-terraform/modules/lambdas + modules/api-gateway) -- Terraform owns
+# the actual API Gateway REST API and Lambda function in AWS.
+
+Resources:
+  TransactionServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: transaction-service
+      Handler: neobank.TransactionHandler::handleRequest
+      Runtime: java17
+      CodeUri: target/transaction-service-1.0.0.jar
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          DB_URL: !Ref DBUrl
+          DB_USER: !Ref DBUser
+          DB_PASSWORD: !Ref DBPassword
+          SNS_TXN_TOPIC_ARN: !Ref SnsTxnTopicArn
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Ref SnsTxnTopicArn
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds: !Ref SubnetIds
+      Events:
+        PostTransactions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TransactionServiceApi
+            Path: /transactions
+            Method: POST
+        OptionsTransactions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TransactionServiceApi
+            Path: /transactions
+            Method: OPTIONS
+
+  TransactionServiceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: neobank-transaction-service-api
+      StageName: prod
+      Cors:
+        AllowMethods: "'POST, OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+Parameters:
+  DBUrl:
+    Type: String
+  DBUser:
+    Type: String
+  DBPassword:
+    Type: String
+    NoEcho: true
+  SnsTxnTopicArn:
+    Type: String
+  SecurityGroupId:
+    Type: String
+  SubnetIds:
+    Type: CommaDelimitedList
+
+Outputs:
+  TransactionServiceFunctionArn:
+    Value: !GetAtt TransactionServiceFunction.Arn
