@@ -360,17 +360,3 @@ cd neobank-lambdas
 Requiere Maven, AWS CLI autenticada, `pip` y `zip`.
 
 ---
-
-## 🔧 Problemas frecuentes
-
-| Síntoma | Causa y solución |
-|---|---|
-| `failed to connect to the docker API ... dockerDesktopLinuxEngine` | Docker Desktop no está corriendo. Ábrelo y espera a que el icono quede en verde. |
-| `NoSuchFieldError: JCTree$JCImport` o `class file has wrong version` al compilar | Estás usando JDK 25 con Lombok 1.18.30. Instala Temurin **JDK 21** o usa la Ruta A (Docker). |
-| `set DB_PASSWORD in .env` al hacer `docker compose up` | Falta el archivo `neobank-backend/.env` o la variable `DB_PASSWORD`. |
-| `Schema-validation: missing table [users]` | Flyway no corrió. Revisa que el contenedor `postgres` esté sano; si la BD quedó a medias: `docker compose down -v && docker compose up -d`. |
-| Login devuelve error de Cognito | El App Client tiene *client secret* activado (el código no envía `SECRET_HASH`) o falta el flujo `ALLOW_USER_PASSWORD_AUTH`. |
-| `401` en cualquier endpoint protegido | Token ausente, caducado, o el usuario existe en Cognito pero no en la tabla `users` (regístrate siempre vía `/api/auth/signup`, no desde la consola de Cognito). |
-| Transferencias e historial fallan en el frontend | `NEXT_PUBLIC_LAMBDA_URL` vacía: esos flujos viven en las Lambdas, no en el backend Spring. |
-| Puerto 8080 / 5432 / 3000 ocupado | Cambia el mapeo en `docker-compose.yml`, o usa `SERVER_PORT` (backend) y `npm run dev -- -p 3001` (frontend). |
-# NeoBank
