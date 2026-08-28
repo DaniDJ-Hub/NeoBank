@@ -1,0 +1,83 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Environment Variables ###
+.env
+.env.local
+.env.*.local
+
+### Logs ###
+logs/
+*.log
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Maven ###
+.mvn/wrapper/maven-wrapper.jar
+
+# --- Carpetas de Dependencias ---
+**/node_modules/
+**/target/
+**/.next/
+**/dist/
+**/build/
+
+# --- Seguridad y Secretos (CRÍTICO) ---
+**/*.pem
+**/*.key
+**/.env*
+**/.terraform/
+**/*.tfstate*
+**/terraform.tfvars
+
+# --- Archivos de Sistema/IDE ---
+.idea/
+.vscode/
+*.log
+DS_Store
+
+# --- Lambda build artifacts (AWS Lambda deploy zips, Python vendored deps) ---
+*.zip
+**/fraud-checker/build/
+**/fraud-detector/build/
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.venv-test/
+venv/
+.pytest_cache/
+**/*.tsbuildinfo
